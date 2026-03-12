@@ -39,7 +39,7 @@ resource "oci_core_route_table" "route_table" {
 
   route_rules {
     network_entity_id = oci_core_service_gateway.service_gateway.id
-    destination       = "all-bom-services-in-oracle-services-network"
+    destination       = "all-hyd-services-in-oracle-services-network"
     destination_type  = "SERVICE_CIDR_BLOCK"
   }
 
@@ -463,57 +463,4 @@ resource "oci_core_subnet" "subnets" {
 
   security_list_ids = [oci_core_security_list.subnet_sls[each.key].id]
   route_table_id    = oci_core_route_table.route_table.id
-}
-
-# Enhanced OKE Cluster with VCN Native Networking
-resource "oci_containerengine_cluster" "oke_cluster" {
-  compartment_id     = var.compartment_ocid
-  name               = "${var.project_name}-${var.environment}-OKE"
-  vcn_id             = oci_core_vcn.vcn.id
-  kubernetes_version = var.k8s_version
-  type               = "ENHANCED_CLUSTER"
-
-  cluster_pod_network_options {
-    cni_type = "OCI_VCN_IP_NATIVE"
-  }
-
-  endpoint_config {
-    is_public_ip_enabled = false
-    subnet_id            = oci_core_subnet.subnets["api"].id
-  }
-}
-
-# Node Pool
-resource "oci_containerengine_node_pool" "oke_node_pool" {
-  compartment_id     = var.compartment_ocid
-  cluster_id         = oci_containerengine_cluster.oke_cluster.id
-  name               = "${var.project_name}-${var.environment}-OKE-NODE-POOL"
-  kubernetes_version = var.k8s_version
-  node_shape         = "VM.Standard.E4.Flex"
-
-  node_shape_config {
-    ocpus         = var.node_pool_ocpus
-    memory_in_gbs = var.node_pool_memory
-  }
-
-  node_source_details {
-    source_type             = "IMAGE"
-    image_id                = var.node_pool_image_id
-    boot_volume_size_in_gbs = var.node_pool_boot_vol_size
-  }
-
-  node_config_details {
-    placement_configs {
-      availability_domain = var.node_ad
-      subnet_id           = oci_core_subnet.subnets["wrk"].id
-    }
-    size = var.node_pool_size
-
-    node_pool_pod_network_option_details {
-      cni_type       = "OCI_VCN_IP_NATIVE"
-      pod_subnet_ids = [oci_core_subnet.subnets["pod"].id]
-    }
-  }
-
-  ssh_public_key = var.ssh_public_key
 }
