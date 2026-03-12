@@ -136,7 +136,7 @@ resource "oci_core_security_list" "subnet_sls" {
   dynamic "egress_security_rules" {
     for_each = each.value.type == "K8S-API" ? [1] : []
     content {
-      destination      = "all-bom-services-in-oracle-services-network"
+      destination      = "all-hyd-services-in-oracle-services-network"
       protocol         = "6"
       description = "	Allow Kubernetes API endpoint to communicate with OKE"
       destination_type = "SERVICE_CIDR_BLOCK"
@@ -208,7 +208,7 @@ resource "oci_core_security_list" "subnet_sls" {
   dynamic "egress_security_rules" {
     for_each = each.value.type == "K8S-WRK" ? [1] : []
     content {
-      destination      = "all-bom-services-in-oracle-services-network"
+      destination      = "all-hyd-services-in-oracle-services-network"
       protocol         = "6"
       description = "Allow nodes to communicate with OKE"
       destination_type = "SERVICE_CIDR_BLOCK"
@@ -287,7 +287,7 @@ resource "oci_core_security_list" "subnet_sls" {
   dynamic "egress_security_rules" {
     for_each = each.value.type == "K8S-POD" ? [1] : []
     content {
-      destination      = "all-bom-services-in-oracle-services-network"
+      destination      = "all-hyd-services-in-oracle-services-network"
       protocol         = "6"
       description = "	Allow worker nodes/pods to communicate with OCI services"
       destination_type = "SERVICE_CIDR_BLOCK"
