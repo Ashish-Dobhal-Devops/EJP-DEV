@@ -112,18 +112,6 @@ resource "oci_core_security_list" "subnet_sls" {
     }
   }
 
-  dynamic "ingress_security_rules" {
-    for_each = each.value.type == "K8S-API" ? [1] : []
-    content {
-      source      = local.subnet_cidrs["admin"]
-      protocol    = "6"
-      description = "For cluster access from Jenkins server subnet"
-      tcp_options {
-          min = 6443
-          max = 6443
-      }
-    }
-  }
 
   dynamic "egress_security_rules" {
     for_each = each.value.type == "K8S-API" ? [1] : []
@@ -184,19 +172,6 @@ resource "oci_core_security_list" "subnet_sls" {
       protocol    = "6"
       description = "Allow Kubernetes API endpoint to communicate with worker nodes"
       source_type = "CIDR_BLOCK"
-    }
-  }
-
-  dynamic "ingress_security_rules" {
-    for_each = each.value.type == "K8S-WRK" ? [1] : []
-    content {
-      source      = local.subnet_cidrs["admin"]
-      protocol    = "6"
-      description = "Allow inbound SSH traffic to managed nodes from Jenkins server subnet"
-      tcp_options {
-          min = 22
-          max = 22
-      }
     }
   }
 
