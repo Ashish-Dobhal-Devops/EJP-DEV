@@ -339,6 +339,7 @@ resource "oci_core_security_list" "subnet_sls" {
       }
     }
   }
+}
   
 # Subnets created dynamically and assigned respective security lists
 resource "oci_core_subnet" "subnets" {
