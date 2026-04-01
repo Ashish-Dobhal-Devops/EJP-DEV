@@ -10,13 +10,13 @@ variable "project_name" {
 }
 
 variable "environment" {
-  default = "DEV"
+  default = "PREPROD"
 }
 
 # PROD VCN Configuration
 
 variable "vcn_cidr_block" {
-  default = "10.12.0.0/16"
+  default = "10.14.0.0/16"
 }
 
 variable "prod_subnet_configs" {
@@ -26,23 +26,23 @@ variable "prod_subnet_configs" {
   }))
   default = {
     db = {
-      cidr_block = "10.12.2.0/23"
+      cidr_block = "10.14.2.0/24"
       type       = "DB"
     }
     api = {
-      cidr_block = "10.12.0.0/23"
+      cidr_block = "10.14.0.0/24"
       type       = "K8S-API"
     }
     wrk = {
-      cidr_block = "10.12.6.0/23"
+      cidr_block = "10.14.1.0/24"
       type       = "K8S-WRK"
     }
     pod = {
-      cidr_block = "10.12.8.0/21"
+      cidr_block = "10.14.3.0/24"
       type       = "K8S-POD"
     }
     lb = {
-      cidr_block = "10.12.4.0/23"
+      cidr_block = "10.14.4.0/27"
       type       = "PVT-LB"
     }
   }
